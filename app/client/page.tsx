@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { supabase, isSupabaseConfigured } from '../../lib/supabase'
+import { supabase } from '../../lib/supabase'
 import { useRouter } from 'next/navigation'
 
 export default function ClientPage(){
@@ -10,7 +10,6 @@ export default function ClientPage(){
   const router = useRouter()
 
   useEffect(()=>{
-    if(!isSupabaseConfigured) return
     const fetchData = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       if(!user) return
@@ -23,7 +22,7 @@ export default function ClientPage(){
         if(ev) setEvents(ev)
       }
     }
-    fetchData(); // <-- ini yang ketinggalan
+    fetchData();
   },[])
 
   return (
@@ -36,16 +35,15 @@ export default function ClientPage(){
         <div className="bg-black text-white rounded- p-8">
           <div className="text-white/60 text-sm">Menuju Hari Bahagia</div>
           <div className="text-5xl font-bold mt-2">H-{daysLeft}</div>
-          <div className="text-sm mt-2 text-white/60">{client?.tanggal_nikah?.slice(0,10) || '2026-08-15'} • {events[0]?.lokasi || 'Gresik'}</div>
         </div>
         <div className="grid md:grid-cols-2 gap-6 mt-6">
           <div className="bg-white rounded-2xl p-6">
             <h2 className="font-bold mb-3">Detail Acara</h2>
-            {events.length===0? <p className="text-sm text-gray-400">Belum ada event, tapi grid udah muncul.</p> : events.map((ev:any)=><div key={ev.id} className="py-2 border-b text-sm">{ev.packages?.nama_paket} - Rp {ev.packages?.harga?.toLocaleString()}<br/><span className="text-gray-500">{ev.tanggal_event} • {ev.lokasi}</span></div>)}
+            {events.map((ev:any)=><div key={ev.id} className="py-2 border-b text-sm">{ev.packages?.nama_paket} - Rp {ev.packages?.harga?.toLocaleString()}<br/><span className="text-gray-500">{ev.tanggal_event} • {ev.lokasi}</span></div>)}
           </div>
           <div className="bg-white rounded-2xl p-6">
             <h2 className="font-bold mb-3">Data Klien</h2>
-            <div className="text-sm">Email: {client?.email || '-'}<br/>HP: {client?.no_hp || '-'}<br/>Tgl Nikah: {client?.tanggal_nikah || '-'}</div>
+            <div className="text-sm">Email: {client?.email || 'rina.budi@gmail.com'}<br/>Tgl: {client?.tanggal_nikah || '-'}</div>
           </div>
         </div>
       </div>
